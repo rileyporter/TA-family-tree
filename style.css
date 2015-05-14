@@ -1,0 +1,9 @@
+body {
+  background-color: #FFFFFF;
+}
+
+#legend {
+  float: left;
+}
+.jumbotron { max-height: 200px;
+padding-top: 10px; }
