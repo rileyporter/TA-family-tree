@@ -30,6 +30,13 @@ path.onefortythree {
   stroke-width: 3.0px;
 }
 
+path.onefortythreex {
+     fill: none;
+  opacity: 0.50;
+  stroke: #2AB248;
+  stroke-width: 3.0px;
+}
+
 .d3-tip {
   line-height: 1;
   font-weight: bold;
@@ -138,7 +145,7 @@ $("#titleAndDescription").css("width", ($(window).width() * 0.5) + "px");
 var testOutput;
 var filenames = [];
 filenames[0] = "tas_3.csv";
-filenames[1] =  "tas_family.csv";
+filenames[1] =  "updated_family_data.csv";
 filenames[2] = "tas_quarters.csv";
 var taColNames = ["id", "f_name", "l_name", "intro_qs", "upper_qs", "net_id", "first_q", "related"];
 
@@ -158,6 +165,7 @@ var default_node_color = "#ccc";
 var default_link_color = "#888";
 var one42_link = "#FFB20E";
 var one43_link = "#3548FF";
+var one43x_link = "#2AB248";
 var clicked = false;
 
 function searchNode(path, node, circle, text, parentToChildDirectory, childToParentDirectory) {
@@ -265,6 +273,7 @@ function restOfCode(err, results) {
       var taId = family[4];
       var parentId142 = family[1];
       var parentId143 = family[2];
+      var parentId143x = family[5];
 
       var taNode = nodes[taId];
       taNode.related = true;
@@ -281,6 +290,13 @@ function restOfCode(err, results) {
         links[i] = link;
         i++;
         nodes[parentId143].related = true;
+      }
+
+      if (parentId143x !== "NULL") {
+        var link = {source: parseInt(parentId143x), target: parseInt(taId), value: 100, type: "onefortythreex"};
+        links[i] = link;
+        i++;
+        nodes[parentId143x].related = true;
       }
   });
 
@@ -532,8 +548,8 @@ var svgGL = legendSvgContainer.append("g")
 var squareL = svgGL.append("rect")
                          .attr("x", startX)
                          .attr("y", 1)
-                         .attr("width", ($(window).width() * 0.18)+ "px")
-                         .attr("height", ($(window).width() * 0.10) + "px")
+                         .attr("width", ($(window).width() * 0.15)+ "px")
+                         .attr("height", ($(window).width() * 0.09) + "px")
                          .style("stroke", "black")
                          .style("stroke-width", 2)
                          .style("stroke-opacity", "1")
@@ -546,34 +562,11 @@ var squareL = svgGL.append("rect")
                     .style("text-anchor", "middle")
                     .text(function(d) { return "Key";});*/
 
-svgGL.append("circle")
-   .attr("cx", startX + 30)
-   .attr("cy", startY + 30)
-   .attr("r", 12);
 
-svgGL.append("text")
-    .attr("x", startX + 70)
-    .attr("y", startY + 35)
-    .style("font-size", "15px")
-    .style("text-anchor", "start")
-    .text(function(d) { return "TA Node";});
+var lineDataEdge1 = [ { "x": startX + 20,   "y": startY + 30}, {"x": startX + 30,   "y": startY + 40}, {"x": startX + 40, "y": startY + 50}];
+var lineDataEdge2 = [ { "x": startX + 20,   "y": startY + 60}, {"x": startX + 30,   "y": startY + 70}, {"x": startX + 40, "y": startY + 80}];
+var lineDataEdge3 = [ { "x": startX + 20,   "y": startY + 90}, {"x": startX + 30,   "y": startY + 100}, {"x": startX + 40, "y": startY + 110}];
 
-svgGL.append("circle")
-     .style("stroke", highlight_node_color)
-     .style("stroke-width", "3px")
-     .attr("cx", startX + 30)
-     .attr("cy", startY + 60)
-     .attr("r", 12);
-
-svgGL.append("text")
-    .attr("x", startX + 70)
-    .attr("y", startY + 65)
-    .style("font-size", "15px")
-    .style("text-anchor", "start")
-    .text(function(d) { return "Selected TA Node";});
-
-var lineDataEdge1 = [ { "x": startX + 20,   "y": startY + 80}, {"x": startX + 30,   "y": startY + 90}, {"x": startX + 40, "y": startY + 100}];
-var lineDataEdge2 = [ { "x": startX + 20,   "y": startY + 110}, {"x": startX + 30,   "y": startY + 120}, {"x": startX + 40, "y": startY + 130}];
  
  //This is the accessor function we talked about above
  var lineFunction = d3.svg.line()
@@ -589,10 +582,10 @@ svgGL.append("path")
 
 svgGL.append("text")
     .attr("x", startX + 70)
-    .attr("y", startY + 97)
+    .attr("y", startY + 45)
     .style("font-size", "15px")
     .style("text-anchor", "start")
-    .text(function(d) { return "142 Parent TA to Child TA";});
+    .text(function(d) { return "142 Parent TA";});
 
 
 svgGL.append("path")
@@ -600,14 +593,29 @@ svgGL.append("path")
       .attr("stroke", one43_link)
       .attr("stroke-width", 2);
 
+
 svgGL.append("text")
     .attr("x",startX + 70)
-    .attr("y", startY + 127)
+    .attr("y", startY + 75)
     .style("font-size", "15px")
     .style("text-anchor", "start")
-    .text(function(d) { return "143 Parent TA to Child TA";});
+    .text(function(d) { return "143 Parent TA";});
+
+svgGL.append("path")
+      .attr("d", lineFunction(lineDataEdge3))
+      .attr("stroke", one43x_link)
+      .attr("stroke-width", 2);
+
+svgGL.append("text")
+    .attr("x", startX + 70)
+    .attr("y", startY + 105)
+    .style("font-size", "15px")
+    .style("text-anchor", "start")
+    .text(function(d) { return "143X Parent TA";});
 
 }
+
+
 
 
 // ================== ACTION functions ================== 
@@ -882,8 +890,10 @@ function exit_highlight(circle, text, path)
       path.style("stroke", function(d) { 
                         if (d.type === "onefortytwo") { 
                             return one42_link; 
+                        } else if (d.type === "onefortythree") {
+                            return one43_link;
                         } else { 
-                            return one43_link; 
+                            return one43x_link; 
                         } });        
       path.style("fill", "none");
       path.style("opacity", "0.50");
