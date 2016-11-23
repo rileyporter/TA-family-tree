@@ -2,16 +2,21 @@ import java.io.*;
 import java.util.*;
 
 public class Parser {
+	public static Set<String> lostSouls = new TreeSet<String>();
+
 	public static void main(String[] args) throws FileNotFoundException {
 		Map<String, Integer> taMap = loadTAs();
-		PrintStream output = new PrintStream(new File("updated_family_data.csv"));
+		PrintStream output = new PrintStream(new File("updated_family_data_au16.csv"));
 		outputOldFamilyData(output);
-		loadNewFamilyData(taMap, 280, output);
+		int endOfFamily = loadNewFamilyData(taMap, 280, output, "new_data.csv");
+		loadNewFamilyData(taMap, endOfFamily, output, "new_data_au16.csv");
+		System.out.println(lostSouls);
+		System.out.println(lostSouls.size());
 	}
 
 	public static Map<String, Integer> loadTAs() throws FileNotFoundException {
 		Map<String, Integer> taMap = new HashMap<String, Integer>();
-		Scanner input = new Scanner(new File("tas_3.csv"));
+		Scanner input = new Scanner(new File("tas_4.csv"));
 		while (input.hasNextLine()) {
 			Scanner nextTa = new Scanner(input.nextLine()).useDelimiter(",");
 			while (nextTa.hasNext()) {
@@ -32,11 +37,11 @@ public class Parser {
 		}
 	}
 
-	public static void loadNewFamilyData(Map<String, Integer> taMap,
-			int family, PrintStream output) throws FileNotFoundException {
+	public static int loadNewFamilyData(Map<String, Integer> taMap,
+			int family, PrintStream output, String filename) throws FileNotFoundException {
 		// input: TA	142	143	143X	154/190M
 		// output: family ID, 142, 143, 190, TA, 143X
-		Scanner input = new Scanner(new File("new_data.csv"));
+		Scanner input = new Scanner(new File(filename));
 		while (input.hasNextLine()) {
 			Scanner nextTa = new Scanner(input.nextLine()).useDelimiter(",");
 			String ta = nextTa.next();
@@ -51,6 +56,7 @@ public class Parser {
 				family++;
 			}
 		}
+		return family;
 	}
 
 	public static String stripQuotes(String token) {
@@ -62,6 +68,7 @@ public class Parser {
 			return "NULL";
 		} else {
 			if (!taMap.containsKey(name)) {
+				lostSouls.add(name);
 				return "NULL";
 			} else {
 				return "\"" + taMap.get(name) + "\"";
